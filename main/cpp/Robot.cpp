@@ -15,6 +15,8 @@ void Robot::RobotInit() {
   m_chooser.SetDefaultOption(kAutoNameDefault, kAutoNameDefault);
   m_chooser.AddOption(kAutoNameCustom, kAutoNameCustom);
   frc::SmartDashboard::PutData("Auto Modes", &m_chooser);
+  //frontRight.SetInverted(true);
+  //rearRight.SetInverted(true);
 }
 
 /**
@@ -64,6 +66,10 @@ void Robot::TeleopInit() {
 
 #define DEADBAND 0.1
 void Robot::TeleopPeriodic() {
+  //mecanum drive
+  m_robotDrive.DriveCartesian(deadBand(m_Xbox.GetRawAxis(0)), deadBand(m_Xbox.GetRawAxis(1)), deadBand(m_Xbox.GetRawAxis(4)));
+
+  //A button (hatch panel pneumatics)
   if (m_Xbox.GetAButton()) {
     hatchPanel.Set(frc::DoubleSolenoid::Value::kForward);
   }
@@ -71,20 +77,39 @@ void Robot::TeleopPeriodic() {
     hatchPanel.Set(frc::DoubleSolenoid::Value::kReverse);
   }
 
+  //triggers (ball grabber)
   if (m_Xbox.GetRawAxis(2)>DEADBAND) {
-    rearLeft.Set(ControlMode::PercentOutput, m_Xbox.GetRawAxis(2));
+    ballMotor.Set(ControlMode::PercentOutput, m_Xbox.GetRawAxis(2));
   }
   else if (m_Xbox.GetRawAxis(3)>DEADBAND) {
-     rearLeft.Set(ControlMode::PercentOutput, -m_Xbox.GetRawAxis(3));
+     ballMotor.Set(ControlMode::PercentOutput, -m_Xbox.GetRawAxis(3));
     }
-
-    else {
-      rearLeft.Set(ControlMode::PercentOutput, 0.0);
+  else {
+     ballMotor.Set(ControlMode::PercentOutput, 0.0);
     }
   
+  //bumpers (hinge)
+  if (m_Xbox.GetRawButton(5)) {
+     hingeMotor.Set(ControlMode::PercentOutput, 0.5);
+  }
+  else if (m_Xbox.GetRawButton(6)) {
+     hingeMotor.Set(ControlMode::PercentOutput, -0.5);
+  }
+    else {
+      hingeMotor.Set(ControlMode::PercentOutput, 0.0);
+    }
+
 }
 
 void Robot::TestPeriodic() {}
+
+double Robot::deadBand(double val) {
+  if (val > -DEADBAND && val < DEADBAND)
+     return 0.0;
+
+	return val;
+}
+
 
 #ifndef RUNNING_FRC_TESTS
 int main() { return frc::StartRobot<Robot>(); }
