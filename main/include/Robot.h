@@ -9,7 +9,7 @@
 
 #include <string>
 #include <frc/WPILib.h>
-#include <frc/IterativeRobot.h>
+#include <frc/TimedRobot.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <ctre/Phoenix.h>
 
@@ -17,7 +17,7 @@
 #define EXTEND 1
 #define RETRACT 0
 
-class Robot : public frc::IterativeRobot {
+class Robot : public frc::TimedRobot {
  public:
   void RobotInit() override;
   void RobotPeriodic() override;
@@ -26,6 +26,7 @@ class Robot : public frc::IterativeRobot {
   void TeleopInit() override;
   void TeleopPeriodic() override;
   void TestPeriodic() override;
+  double deadBand(double);
 
  private:
   frc::SendableChooser<std::string> m_chooser;
@@ -34,8 +35,11 @@ class Robot : public frc::IterativeRobot {
   std::string m_autoSelected;
   frc::DoubleSolenoid hatchPanel{0,1};
   frc::XboxController m_Xbox{0};
-  TalonSRX frontLeft{1}; 
-  TalonSRX rearLeft{5}; 
-  TalonSRX frontRight{2}; 
-  TalonSRX rearRight{4}; 
+  WPI_TalonSRX frontLeft{1}; // Should be 1
+  WPI_TalonSRX rearLeft{5};  // Should be 5
+  WPI_TalonSRX frontRight{2}; 
+  WPI_TalonSRX rearRight{4}; 
+  TalonSRX ballMotor{6};
+  TalonSRX hingeMotor{7};
+  frc::MecanumDrive m_robotDrive{frontLeft, rearLeft, frontRight, rearRight};
 };
