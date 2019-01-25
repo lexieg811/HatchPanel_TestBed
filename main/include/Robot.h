@@ -12,6 +12,7 @@
 #include <frc/TimedRobot.h>
 #include <frc/smartdashboard/SendableChooser.h>
 #include <ctre/Phoenix.h>
+#include <rev/CANSparkMax.h>
 
 // Pnuematic Hatch Panel
 #define EXTEND 1
@@ -32,14 +33,23 @@ class Robot : public frc::TimedRobot {
   frc::SendableChooser<std::string> m_chooser;
   const std::string kAutoNameDefault = "Default";
   const std::string kAutoNameCustom = "My Auto";
+
+  // Motor IDS
+  //static const int front_left_id = 2, rear_left_id = 5, front_right_id = 1, rear_right_id = 4;
+  #define BRUSHLESS rev::CANSparkMax::MotorType::kBrushless
+
   std::string m_autoSelected;
   frc::DoubleSolenoid hatchPanel{0,1};
   frc::XboxController m_Xbox{0};
-  WPI_TalonSRX frontLeft{1}; // Should be 1
-  WPI_TalonSRX rearLeft{5};  // Should be 5
-  WPI_TalonSRX frontRight{2}; 
-  WPI_TalonSRX rearRight{4}; 
-  TalonSRX ballMotor{6};
-  TalonSRX hingeMotor{7};
+
+  // Drive base motor
+  rev::CANSparkMax frontLeft{2, BRUSHLESS};
+  rev::CANSparkMax rearLeft{5, BRUSHLESS};
+  rev::CANSparkMax frontRight{1, BRUSHLESS};
+  rev::CANSparkMax rearRight{4, BRUSHLESS};
+
+  // Subsystem motors
+  WPI_TalonSRX ballMotor{6};
+  WPI_TalonSRX hingeMotor{7};
   frc::MecanumDrive m_robotDrive{frontLeft, rearLeft, frontRight, rearRight};
 };
