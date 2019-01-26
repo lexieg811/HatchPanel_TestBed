@@ -48,6 +48,12 @@ class Robot : public frc::TimedRobot {
   rev::CANSparkMax frontRight{1, BRUSHLESS};
   rev::CANSparkMax rearRight{4, BRUSHLESS};
 
+  // Drive encoders
+  rev::CANEncoder fl_encoder = frontLeft.GetEncoder();
+  rev::CANEncoder rl_encoder = rearLeft.GetEncoder();
+  rev::CANEncoder fr_encoder = frontRight.GetEncoder();
+  rev::CANEncoder rr_encoder = rearRight.GetEncoder();
+
   // Subsystem motors
   WPI_TalonSRX ballMotor{6};
   WPI_TalonSRX hingeMotor{7};
